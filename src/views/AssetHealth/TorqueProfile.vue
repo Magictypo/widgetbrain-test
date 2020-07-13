@@ -35,14 +35,16 @@
 
 <script>
 import { Chart } from 'highcharts-vue';
-import axios from 'axios';
 import _ from 'lodash';
 import chartOptions from '@/services/ChartOptions';
+import TorqueSvc from '@/services/Api/Assets/TorqueSvc';
+import ErrorSvc from '@/services/ErrorSvc';
 
 export default {
   name: 'TorqueProfile',
   data() {
     return {
+      isLoading: false,
       OpenChartOptions: chartOptions(),
       CloseChartOptions: chartOptions(),
     };
@@ -50,36 +52,47 @@ export default {
   components: {
     highcharts: Chart,
   },
-  async mounted() {
-    // limit and destroy for better performace
-    const res = await axios.get('https://b507qiqddb.execute-api.eu-central-1.amazonaws.com/torque');
-    if (res) {
-      const AverageSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Average' });
-      const LastSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Last' });
+  methods: {
+    async getData() {
+      try {
+        const res = await TorqueSvc.getData();
+        if (res) {
+          const AverageSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Average' });
+          const LastSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Last' });
 
-      const AverageArray = [];
-      const LastArray = [];
+          const AverageArray = [];
+          const LastArray = [];
 
-      // eslint-disable-next-line no-plusplus
-      for (let position = 1; position <= 100; position++) {
-        const OpenPositionArray = _.filter(res.data, {
-          Direction: 'Open',
-          Position: position,
-        });
-        const LastPositionArray = OpenPositionArray[OpenPositionArray.length - 1];
+          // eslint-disable-next-line no-plusplus
+          for (let position = 1; position <= 100; position++) {
+            const OpenPositionArray = _.filter(res.data, {
+              Direction: 'Open',
+              Position: position,
+            });
+            const LastPositionArray = OpenPositionArray[OpenPositionArray.length - 1];
 
-        if (LastPositionArray) {
-          AverageArray.push(LastPositionArray.AverageTorque);
-          LastArray.push(LastPositionArray.LastTorque);
-        } else {
-          AverageArray.push(0);
-          LastArray.push(0);
+            if (LastPositionArray) {
+              AverageArray.push(LastPositionArray.AverageTorque);
+              LastArray.push(LastPositionArray.LastTorque);
+            } else {
+              AverageArray.push(0);
+              LastArray.push(0);
+            }
+          }
+
+          AverageSeriesOpen.data = AverageArray;
+          LastSeriesOpen.data = LastArray;
         }
+      } catch (e) {
+        ErrorSvc.getError(e);
       }
-
-      AverageSeriesOpen.data = AverageArray;
-      LastSeriesOpen.data = LastArray;
-    }
+    },
+  },
+  async mounted() {
+    this.isLoading = true;
+    await this.getData();
+    // Todo: ini siate next tick
+    this.isLoading = false;
   },
 };
 </script>
