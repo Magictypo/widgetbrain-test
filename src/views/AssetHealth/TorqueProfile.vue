@@ -1,17 +1,45 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-2">
-        <h2>sidebar goes here</h2>
-        <ul>
-          <li>Menu 1</li>
-          <li>Menu 2</li>
-          <li>Menu 3</li>
-          <li>Menu 4</li>
-          <li>Menu 5</li>
-        </ul>
+      <div class="col-2 py-3" style="border-right: 1px solid #ccc;">
+        <div class="nav" style="margin: -16px -15px; color: #eeeeee">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="fa fa-arrow-left pl-3 mx-1" aria-hidden="true"></i>
+                Terminal Overview
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="fa fa-bars mx-3" aria-hidden="true"></i>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <hr style="margin-left: -15px; margin-right: -15px;" class="mb-0">
+
+        <div class="row">
+          <img src="../../assets/img/pump.jpg" width="100%" alt="">
+        </div>
+
+        <div class="mt-3">
+          <span>Terminal Name</span>
+          <h3>West</h3>
+
+          <span>Country Code</span>
+          <h3>NLD</h3>
+
+          <span>Address</span>
+
+          <i class="fa fa-map-marker pull-right fa-2x mt-5" aria-hidden="true"></i>
+
+        </div>
+
       </div>
-      <div class="col-10">
+      <div class="col-10 py-3">
 
         <div class="card">
           <div class="card-header">
@@ -19,6 +47,7 @@
             <i class="fa fa-arrow-right mx-1" aria-hidden="true"></i>
             <i class="fa fa-dot-circle-o mx-1" aria-hidden="true"></i>
             Master Station 1-1
+            <i class="fa fa-map-marker pull-right" aria-hidden="true"></i>
           </div>
           <div class="card-body">
             <div class="row">
@@ -42,7 +71,7 @@
 
                 <hr style="margin: 0 -20px;">
 
-                <h2>Close</h2>
+                <h2 class="mt-3">Close</h2>
                 <highcharts :options="CloseChartOptions"></highcharts>
               </div>
             </div>
@@ -114,7 +143,7 @@ export default {
                   LastPositionArrayOpen.AverageTorque
                   + LastPositionArrayOpen.LastTorque
                 )
-                  / 2,
+                / 2,
               );
             } else {
               AverageArrayOpen.push(0);

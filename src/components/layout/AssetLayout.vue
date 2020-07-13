@@ -2,7 +2,7 @@
   <div>
     <Header></Header>
 
-    <main role="main" class="pt-3">
+    <main role="main">
       <router-view/>
     </main>
 
