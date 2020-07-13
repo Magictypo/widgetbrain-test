@@ -1,5 +1,7 @@
 import GlobalConfig from '@/config';
 import Vue from 'vue';
+import 'bootstrap';
+import 'popper.js';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 import axios from 'axios';
 
