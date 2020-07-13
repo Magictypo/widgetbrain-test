@@ -35,45 +35,49 @@
 
 <script>
 import { Chart } from 'highcharts-vue';
+import axios from 'axios';
+import _ from 'lodash';
+import chartOptions from '@/services/ChartOptions';
 
 export default {
   name: 'TorqueProfile',
   data() {
     return {
-      OpenChart: {
-        data: [],
-      },
-      CloseChart: {
-        data: [],
-      },
-      OpenChartOptions: {
-        chart: {
-          type: 'bar',
-          height: 500,
-        },
-        series: [
-          {
-            name: 'Torque',
-            data: this.OpenChart,
-          },
-        ],
-      },
-      CloseChartOptions: {
-        chart: {
-          type: 'bar',
-          height: 500,
-        },
-        series: [
-          {
-            name: 'Torque',
-            data: this.CloseChart,
-          },
-        ],
-      },
+      OpenChartOptions: chartOptions(),
+      CloseChartOptions: chartOptions(),
     };
   },
   components: {
     highcharts: Chart,
+  },
+  async mounted() {
+    // limit and destroy for better performace
+    const res = await axios.get('https://b507qiqddb.execute-api.eu-central-1.amazonaws.com/torque');
+    if (res) {
+      const AverageSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Average' });
+      const LastSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Last' });
+
+      // eslint-disable-next-line no-plusplus
+      for (let position = 1; position <= 100; position++) {
+        // Todo: update series at once for better peformace, *reactive
+
+        const OpenPositionArray = _.filter(res.data, {
+          Direction: 'Open',
+          Position: position,
+        });
+        const LastPositionArray = OpenPositionArray[OpenPositionArray.length - 1];
+
+        AverageSeriesOpen.data.push(
+          LastPositionArray ? LastPositionArray.AverageTorque : 0,
+        );
+        LastSeriesOpen.data.push(
+          LastPositionArray ? LastPositionArray.LastTorque : 0,
+        );
+      }
+
+      this.CloseChartOptions.series[0].data = _.filter(res.data, { Direction: 'Close' })
+        .map(this.mapperData);
+    }
   },
 };
 </script>
