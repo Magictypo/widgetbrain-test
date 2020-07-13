@@ -1,12 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import DashboardLayout from '@/components/layout/DashboardLayout.vue';
-import LoginLayout from '@/components/layout/LoginLayout.vue';
-import Home from '@/views/Home.vue';
-import About from '@/views/About.vue';
-import Login from '@/views/Login.vue';
-import store from '@/store';
-import axios from 'axios';
 import AssetLayout from '@/components/layout/AssetLayout.vue';
 import TorqueProfile from '@/views/AssetHealth/TorqueProfile.vue';
 
@@ -16,29 +10,7 @@ const routes = [
   {
     path: '/',
     component: DashboardLayout,
-    children: [
-      {
-        path: '',
-        name: 'home',
-        component: Home,
-      }, {
-        path: 'about',
-        name: 'about',
-        component: About,
-      },
-
-    ],
-  },
-  {
-    path: '/login',
-    component: LoginLayout,
-    children: [
-      {
-        path: '',
-        name: 'login',
-        component: Login,
-      },
-    ],
+    redirect: { name: 'torque-profile' },
   },
   {
     path: '/asset-health',
@@ -55,18 +27,6 @@ const routes = [
         component: TorqueProfile,
       },
     ],
-  },
-  {
-    path: '/restrictedpage',
-    beforeEnter: async (to, from, next) => {
-      const accessToken = store.getters['auth/accessToken'];
-      if (!accessToken) {
-        next('/auth/login');
-      }
-      axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-      await store.dispatch('auth/getUser');
-      next();
-    },
   },
 ];
 
