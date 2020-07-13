@@ -1,18 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
-import dummyResponse from '@/resources/mock/dummyResponse.json';
+import torqueResponse from '@/resources/mock/torque.json';
 
 const mock = new MockAdapter(axios);
-const enable = false;
+const enable = true;
 
 if (process.env.NODE_ENV === 'development' && enable) {
   mock
-    .onGet('/api/v1/article',
-      {
-        params: {
-          page_size: 20,
-          page: 1,
-        },
-      })
-    .reply(200, dummyResponse);
+    .onGet('https://b507qiqddb.execute-api.eu-central-1.amazonaws.com/torque')
+    .reply(200, torqueResponse);
 }

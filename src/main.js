@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import './filters';
 import './mixin';
-// import './mock';
+import './mock';
 
 import App from './App.vue';
 import router from './router';
