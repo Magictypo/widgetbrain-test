@@ -57,26 +57,28 @@ export default {
       const AverageSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Average' });
       const LastSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Last' });
 
+      const AverageArray = [];
+      const LastArray = [];
+
       // eslint-disable-next-line no-plusplus
       for (let position = 1; position <= 100; position++) {
-        // Todo: update series at once for better peformace, *reactive
-
         const OpenPositionArray = _.filter(res.data, {
           Direction: 'Open',
           Position: position,
         });
         const LastPositionArray = OpenPositionArray[OpenPositionArray.length - 1];
 
-        AverageSeriesOpen.data.push(
-          LastPositionArray ? LastPositionArray.AverageTorque : 0,
-        );
-        LastSeriesOpen.data.push(
-          LastPositionArray ? LastPositionArray.LastTorque : 0,
-        );
+        if (LastPositionArray) {
+          AverageArray.push(LastPositionArray.AverageTorque);
+          LastArray.push(LastPositionArray.LastTorque);
+        } else {
+          AverageArray.push(0);
+          LastArray.push(0);
+        }
       }
 
-      this.CloseChartOptions.series[0].data = _.filter(res.data, { Direction: 'Close' })
-        .map(this.mapperData);
+      AverageSeriesOpen.data = AverageArray;
+      LastSeriesOpen.data = LastArray;
     }
   },
 };
