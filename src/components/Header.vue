@@ -30,6 +30,13 @@
             Login
           </router-link>
         </li>
+        <li class="nav-item">
+          <router-link
+            class="nav-link"
+            :to="{ name: 'asset-health' }">
+            Asset Health
+          </router-link>
+        </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
         <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
