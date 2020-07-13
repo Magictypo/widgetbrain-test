@@ -1,4 +1,4 @@
-# magictypo-boilerplate
+# widgetbrain-test
 
 ## Project setup
 ```
