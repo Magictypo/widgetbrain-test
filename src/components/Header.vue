@@ -1,6 +1,8 @@
 <template>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Navbar</a>
+    <a class="navbar-brand ml-5 left-divider pl-2" href="#">
+      {{ 'Predictive Maintenance'.toUpperCase() }}
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
             aria-expanded="false" aria-label="Toggle navigation">
@@ -38,10 +40,21 @@
           </router-link>
         </li>
       </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-      </form>
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false">Dropdown</a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
+            <a class="dropdown-item" href="#">Profile</a>
+            <a class="dropdown-item" href="#">Logout</a>
+          </div>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fa fa-power-off fa-2x mt-1 ml-2"></i>
+          </a>
+        </li>
+      </ul>
     </div>
   </nav>
 </template>
@@ -52,6 +65,8 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.left-divider {
+  border-left: 1px #ccc solid;
+}
 </style>
