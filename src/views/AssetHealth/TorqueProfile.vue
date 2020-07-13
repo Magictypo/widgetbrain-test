@@ -13,18 +13,39 @@
       </div>
       <div class="col-10">
 
-        <div class="row">
-          <div class="col-12">
-            <h1>Torque Page Goes here</h1>
-            <hr>
+        <div class="card">
+          <div class="card-header">
+            Asset Overview
+            <i class="fa fa-arrow-right mx-1" aria-hidden="true"></i>
+            <i class="fa fa-dot-circle-o mx-1" aria-hidden="true"></i>
+            Master Station 1-1
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12">
 
-            <h2>Open Chart</h2>
-            <highcharts :options="OpenChartOptions"></highcharts>
+                <div class="nav-scroller" style="margin-top: -20px;">
+                  <nav class="nav">
+                    <a class="p-2 text-muted" href="#">EVENTS</a>
+                    <a class="p-2 text-muted" href="#">POSITION</a>
+                    <a class="p-2 text-muted" href="#">TRAVEL TIME</a>
+                    <a class="p-2 text-muted active" href="#">TORQUE PROFILE</a>
+                    <a class="p-2 text-muted" href="#">WORK ORDERS</a>
+                    <a class="p-2 text-muted" href="#">ALARM ANALYTICS</a>
+                  </nav>
+                </div>
 
-            <hr>
+                <hr style="margin: 0 -20px;">
 
-            <h2>Close Chart</h2>
-            <highcharts :options="CloseChartOptions"></highcharts>
+                <h2 class="mt-3">Open</h2>
+                <highcharts :options="OpenChartOptions"></highcharts>
+
+                <hr style="margin: 0 -20px;">
+
+                <h2>Close</h2>
+                <highcharts :options="CloseChartOptions"></highcharts>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -141,5 +162,9 @@ export default {
 </script>
 
 <style scoped>
+
+.text-muted.active {
+  border-bottom: 4px solid #777777;
+}
 
 </style>
