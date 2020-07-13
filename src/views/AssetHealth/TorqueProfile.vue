@@ -59,29 +59,47 @@ export default {
         if (res) {
           const AverageSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Average' });
           const LastSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Last' });
+          const AverageSeriesClose = _.find(this.CloseChartOptions.series, { name: 'Average' });
+          const LastSeriesClose = _.find(this.CloseChartOptions.series, { name: 'Last' });
 
-          const AverageArray = [];
-          const LastArray = [];
+          const AverageArrayOpen = [];
+          const LastArrayOpen = [];
+          const AverageArrayClose = [];
+          const LastArrayClose = [];
 
           // eslint-disable-next-line no-plusplus
           for (let position = 1; position <= 100; position++) {
-            const OpenPositionArray = _.filter(res.data, {
+            const PositionArrayOpen = _.filter(res.data, {
               Direction: 'Open',
               Position: position,
             });
-            const LastPositionArray = OpenPositionArray[OpenPositionArray.length - 1];
+            const PositionArrayClose = _.filter(res.data, {
+              Direction: 'Close',
+              Position: position,
+            });
+            const LastPositionArrayOpen = PositionArrayOpen[PositionArrayOpen.length - 1];
+            const LastPositionArrayClose = PositionArrayClose[PositionArrayClose.length - 1];
 
-            if (LastPositionArray) {
-              AverageArray.push(LastPositionArray.AverageTorque);
-              LastArray.push(LastPositionArray.LastTorque);
+            if (LastPositionArrayOpen) {
+              AverageArrayOpen.push(LastPositionArrayOpen.AverageTorque);
+              LastArrayOpen.push(LastPositionArrayOpen.LastTorque);
             } else {
-              AverageArray.push(0);
-              LastArray.push(0);
+              AverageArrayOpen.push(0);
+              LastArrayOpen.push(0);
+            }
+            if (LastPositionArrayClose) {
+              AverageArrayClose.push(LastPositionArrayClose.AverageTorque);
+              LastArrayClose.push(LastPositionArrayClose.LastTorque);
+            } else {
+              AverageArrayClose.push(0);
+              LastArrayClose.push(0);
             }
           }
 
-          AverageSeriesOpen.data = AverageArray;
-          LastSeriesOpen.data = LastArray;
+          AverageSeriesOpen.data = AverageArrayOpen;
+          LastSeriesOpen.data = LastArrayOpen;
+          AverageSeriesClose.data = AverageArrayClose;
+          LastSeriesClose.data = LastArrayClose;
         }
       } catch (e) {
         ErrorSvc.getError(e);
