@@ -7,6 +7,8 @@ import About from '@/views/About.vue';
 import Login from '@/views/Login.vue';
 import store from '@/store';
 import axios from 'axios';
+import AssetLayout from '@/components/layout/AssetLayout.vue';
+import TorqueProfile from '@/views/AssetHealth/TorqueProfile.vue';
 
 Vue.use(VueRouter);
 
@@ -35,6 +37,22 @@ const routes = [
         path: '',
         name: 'login',
         component: Login,
+      },
+    ],
+  },
+  {
+    path: '/asset-health',
+    component: AssetLayout,
+    children: [
+      {
+        path: '',
+        name: 'asset-health',
+        redirect: { name: 'torque-profile' },
+      },
+      {
+        path: 'torque-profile',
+        name: 'torque-profile',
+        component: TorqueProfile,
       },
     ],
   },
