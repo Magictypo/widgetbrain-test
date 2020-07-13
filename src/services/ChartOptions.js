@@ -4,7 +4,7 @@ export default function () {
       type: 'column',
     },
     title: {
-      text: 'Open',
+      text: '',
     },
     xAxis: {
       categories: [
