@@ -42,8 +42,8 @@ export default {
     highcharts: Chart,
   },
   methods: {
-    getSeriesContainer(chart, name) {
-      return _.find(chart, { name });
+    getSeriesContainer(series, name) {
+      return _.find(series, { name });
     },
     getLastArray(array) {
       return array[array.length - 1];
