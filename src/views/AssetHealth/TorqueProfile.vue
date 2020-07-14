@@ -2,45 +2,10 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-2 py-3" style="border-right: 1px solid #ccc;">
-        <div class="nav" style="margin: -16px -15px; color: #eeeeee">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="fa fa-arrow-left pl-3 mx-1" aria-hidden="true"></i>
-                Terminal Overview
-              </a>
-            </li>
-          </ul>
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="fa fa-bars mx-3" aria-hidden="true"></i>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <hr style="margin-left: -15px; margin-right: -15px;" class="mb-0">
-
-        <div class="row">
-          <img src="../../assets/img/pump.jpg" width="100%" alt="">
-        </div>
-
-        <div class="mt-3">
-          <span>Terminal Name</span>
-          <h3>West</h3>
-
-          <span>Country Code</span>
-          <h3>NLD</h3>
-
-          <span>Address</span>
-
-          <i class="fa fa-map-marker pull-right fa-2x mt-5" aria-hidden="true"></i>
-
-        </div>
+        <AssetsSidebar/>
 
       </div>
       <div class="col-10 py-3">
-
         <div class="card">
           <div class="card-header">
             Asset Overview
@@ -77,7 +42,6 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -89,6 +53,7 @@ import _ from 'lodash';
 import chartOptions from '@/services/ChartOptions';
 import TorqueSvc from '@/services/Api/Assets/TorqueSvc';
 import ErrorSvc from '@/services/ErrorSvc';
+import AssetsSidebar from '@/components/assetsHealth/sidebar.vue';
 
 export default {
   name: 'TorqueProfile',
@@ -100,6 +65,7 @@ export default {
     };
   },
   components: {
+    AssetsSidebar,
     highcharts: Chart,
   },
   methods: {
