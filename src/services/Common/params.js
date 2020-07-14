@@ -9,6 +9,7 @@ const ParamsHelperSvc = {
             .filter((k) => data[k] !== 'all')
             .filter((k) => data[k] !== '')
             .filter((k) => data[k] !== null)
+            // eslint-disable-next-line array-callback-return,consistent-return
             .map((k) => {
               if (typeof data[k] === 'string' || typeof data[k] === 'number') {
                 return `${encodeURIComponent(k)}=${encodeURIComponent(data[k])}`;
