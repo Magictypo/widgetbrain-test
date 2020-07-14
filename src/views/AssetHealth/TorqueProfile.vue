@@ -20,6 +20,8 @@
 import { Chart } from 'highcharts-vue';
 import store from '@/store/assetHealth/index';
 
+let nTick = 0;
+
 export default {
   name: 'TorqueProfile',
   data() {
@@ -33,11 +35,9 @@ export default {
   methods: {
     simulateNextTick() {
       // For Interactive Esthetic Only, don't judge this code
-
-      let nTick = 0;
       setTimeout(() => {
-        if (nTick > 10) return;
-        nTick += nTick;
+        if (nTick > 100) return;
+        nTick += 1;
 
         const newAverage = this.OpenChartOptions.series[0].data.map((o) => o);
         const newLast = this.OpenChartOptions.series[1].data.map((o) => o);
