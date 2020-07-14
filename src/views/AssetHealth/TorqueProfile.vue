@@ -21,101 +21,102 @@ import chartOptions from '@/services/ChartOptions';
 import TorqueSvc from '@/services/Api/Assets/TorqueSvc';
 import ErrorSvc from '@/services/ErrorSvc';
 
+const NUMBER_OF_PUMP = 100;
+const DIRECTION_OPEN = 'Open';
+const DIRECTION_CLOSE = 'Close';
+const AVERAGE_TORQUE = 'AverageTorque';
+const LAST_TORQUE = 'LastTorque';
+const FORECAST_TORQUE = 'ForecastTorque';
+const DISPLAY_SERIES = [AVERAGE_TORQUE, LAST_TORQUE, FORECAST_TORQUE];
+
 export default {
   name: 'TorqueProfile',
   data() {
     return {
       isLoading: false,
-      OpenChartOptions: chartOptions(),
-      CloseChartOptions: chartOptions(),
+      OpenChartOptions: chartOptions(DISPLAY_SERIES),
+      CloseChartOptions: chartOptions(DISPLAY_SERIES),
     };
   },
   components: {
     highcharts: Chart,
   },
   methods: {
+    getSeriesContainer(chart, name) {
+      return _.find(chart, { name });
+    },
+    getLastArray(array) {
+      return array[array.length - 1];
+    },
+    getArrayByPosistionAndDirection(data, position, direction) {
+      return _.filter(data, {
+        Direction: direction,
+        Position: position,
+      });
+    },
+    getForecastValue(Average, Last) {
+      return (Average + Last) / 2;
+    },
+    getDataForSeries(data, direction) {
+      const OnetoNPump = Array.from(Array(NUMBER_OF_PUMP), (x, i) => i + 1);
+      const AverageArray = [];
+      const LastArray = [];
+      const ForecastArray = [];
+
+      OnetoNPump.forEach((position) => {
+        const ArrayByPositionAndDirection = this.getArrayByPosistionAndDirection(
+          data,
+          position, direction,
+        );
+        const lastObj = this.getLastArray(ArrayByPositionAndDirection);
+        if (lastObj) {
+          const Average = lastObj[AVERAGE_TORQUE];
+          const Last = lastObj[LAST_TORQUE];
+          AverageArray.push(Average);
+          LastArray.push(Last);
+          ForecastArray.push(this.getForecastValue(Average, Last));
+        }
+      });
+      return {
+        [AVERAGE_TORQUE]: AverageArray,
+        [LAST_TORQUE]: LastArray,
+        [FORECAST_TORQUE]: ForecastArray,
+      };
+    },
+    populateSeriesByName(container, name, data) {
+      const containerSeries = this.getSeriesContainer(container, name);
+      console.log('containerSeries', containerSeries);
+      containerSeries.data = data[name];
+      return containerSeries;
+    },
+    populateChart(data, chart, direction) {
+      const ChartSeries = chart.series;
+      const SeriesData = this.getDataForSeries(data, direction);
+      DISPLAY_SERIES.forEach((series) => {
+        this.populateSeriesByName(ChartSeries, series, SeriesData);
+      });
+    },
+    populateAllCharts(data) {
+      this.populateChart(data, this.OpenChartOptions, DIRECTION_OPEN);
+      this.populateChart(data, this.CloseChartOptions, DIRECTION_CLOSE);
+    },
     async getData() {
       try {
-        const res = await TorqueSvc.getData();
-        if (res) {
-          const AverageSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Average' });
-          const LastSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Last' });
-          const ForeCastSeriesOpen = _.find(this.OpenChartOptions.series, { name: 'Forecast' });
-
-          const AverageSeriesClose = _.find(this.CloseChartOptions.series, { name: 'Average' });
-          const LastSeriesClose = _.find(this.CloseChartOptions.series, { name: 'Last' });
-          const ForeCastSeriesClose = _.find(this.CloseChartOptions.series, { name: 'Forecast' });
-
-          const AverageArrayOpen = [];
-          const LastArrayOpen = [];
-          const ForecastArrayOpen = [];
-          const AverageArrayClose = [];
-          const LastArrayClose = [];
-          const ForecastArrayClose = [];
-
-          // eslint-disable-next-line no-plusplus
-          for (let position = 1; position <= 100; position++) {
-            const PositionArrayOpen = _.filter(res.data, {
-              Direction: 'Open',
-              Position: position,
-            });
-            const PositionArrayClose = _.filter(res.data, {
-              Direction: 'Close',
-              Position: position,
-            });
-            const LastPositionArrayOpen = PositionArrayOpen[PositionArrayOpen.length - 1];
-            const LastPositionArrayClose = PositionArrayClose[PositionArrayClose.length - 1];
-
-            if (LastPositionArrayOpen) {
-              AverageArrayOpen.push(LastPositionArrayOpen.AverageTorque);
-              LastArrayOpen.push(LastPositionArrayOpen.LastTorque);
-              ForecastArrayOpen.push(
-                (
-                  LastPositionArrayOpen.AverageTorque
-                  + LastPositionArrayOpen.LastTorque
-                )
-                / 2,
-              );
-            } else {
-              AverageArrayOpen.push(0);
-              LastArrayOpen.push(0);
-              ForecastArrayOpen.push(0);
-            }
-
-            if (LastPositionArrayClose) {
-              AverageArrayClose.push(LastPositionArrayClose.AverageTorque);
-              LastArrayClose.push(LastPositionArrayClose.LastTorque);
-              ForecastArrayClose.push(
-                (
-                  LastPositionArrayClose.AverageTorque
-                  + LastPositionArrayClose.LastTorque
-                )
-                / 2,
-              );
-            } else {
-              AverageArrayClose.push(0);
-              LastArrayClose.push(0);
-              ForecastArrayClose.push(0);
-            }
-          }
-
-          AverageSeriesOpen.data = AverageArrayOpen;
-          LastSeriesOpen.data = LastArrayOpen;
-          ForeCastSeriesOpen.data = ForecastArrayOpen;
-
-          AverageSeriesClose.data = AverageArrayClose;
-          LastSeriesClose.data = LastArrayClose;
-          ForeCastSeriesClose.data = ForecastArrayClose;
-        }
+        return await TorqueSvc.getData();
       } catch (e) {
-        ErrorSvc.getError(e);
+        return ErrorSvc.getError(e);
       }
     },
   },
   async mounted() {
     this.isLoading = true;
-    await this.getData();
-    // Todo: ini siate next tick
+    try {
+      const res = await this.getData();
+      this.populateAllCharts(res.data);
+    } catch (e) {
+      ErrorSvc.getErrors(e);
+    }
+    // Todo: init next tick
     this.isLoading = false;
   },
 };
