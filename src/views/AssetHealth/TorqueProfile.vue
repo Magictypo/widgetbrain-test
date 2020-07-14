@@ -45,9 +45,6 @@ export default {
     getSeriesContainer(series, name) {
       return _.find(series, { name });
     },
-    getLastArray(array) {
-      return array[array.length - 1];
-    },
     getLastByPosistionAndDirection(data, position, direction) {
       return _.findLast(data, {
         Direction: direction,
