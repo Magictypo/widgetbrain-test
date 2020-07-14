@@ -91,6 +91,9 @@ export default {
     populateAllCharts(data) {
       this.populateChart(data, this.OpenChartOptions, DIRECTION_OPEN);
       this.populateChart(data, this.CloseChartOptions, DIRECTION_CLOSE);
+      setTimeout(() => {
+        this.simulateNextTick();
+      }, 1000);
     },
     async getData() {
       try {
@@ -98,6 +101,27 @@ export default {
       } catch (e) {
         return ErrorSvc.getError(e);
       }
+    },
+    simulateNextTick() {
+      let nTick = 0;
+      setTimeout(() => {
+        if (nTick > 10) return;
+        nTick += nTick;
+
+        const newAverage = this.OpenChartOptions.series[0].data.map((o) => o);
+        const newLast = this.OpenChartOptions.series[1].data.map((o) => o);
+
+        const OnetoNPump = Array.from(Array(NUMBER_OF_PUMP), (x, i) => i + 1);
+        OnetoNPump.forEach((position) => {
+          newAverage[position - 1] += Math.random() < 0.5 ? -0.05 : 0.05;
+          newLast[position - 1] += Math.random() < 0.5 ? -0.05 : 0.05;
+        });
+
+        this.OpenChartOptions.series[0].data = newAverage;
+        this.OpenChartOptions.series[1].data = newLast;
+        this.OpenChartOptions.series[2].data = (newAverage + newLast) / 2;
+        this.simulateNextTick();
+      }, 1000);
     },
   },
   async mounted() {
@@ -108,7 +132,6 @@ export default {
     } catch (e) {
       ErrorSvc.getErrors(e);
     }
-    // Todo: init next tick
     this.isLoading = false;
   },
 };
