@@ -3,7 +3,7 @@
     <div class="col-12">
       <hr style="margin: 0 -20px;">
 
-      <i class="fa fa-spinner fa-2x fa-spin mt-3"></i>
+      <i v-if="isLoading" class="fa fa-spinner fa-2x fa-spin mt-3"></i>
 
       <h2 class="mt-3">Open</h2>
       <highcharts :options="OpenChartOptions"></highcharts>
