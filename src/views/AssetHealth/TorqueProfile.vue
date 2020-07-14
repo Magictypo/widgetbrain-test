@@ -55,37 +55,33 @@ export default {
       });
     },
     getForecastValue(Average, Last) {
+      // FORECAST Formula
       return (Average + Last) / 2;
+    },
+    getValueOfAttr(obj, attrName) {
+      if (!obj) return 0;
+      if (attrName !== FORECAST_TORQUE) {
+        return obj[attrName];
+      }
+      return this.getForecastValue(obj[AVERAGE_TORQUE], obj[LAST_TORQUE]);
     },
     getDataForSeries(data, direction) {
       const OnetoNPump = Array.from(Array(NUMBER_OF_PUMP), (x, i) => i + 1);
-      const AverageArray = [];
-      const LastArray = [];
-      const ForecastArray = [];
-
-      OnetoNPump.forEach((position) => {
-        const ArrayByPositionAndDirection = this.getArrayByPosistionAndDirection(
-          data,
-          position, direction,
-        );
-        const lastObj = this.getLastArray(ArrayByPositionAndDirection);
-        if (lastObj) {
-          const Average = lastObj[AVERAGE_TORQUE];
-          const Last = lastObj[LAST_TORQUE];
-          AverageArray.push(Average);
-          LastArray.push(Last);
-          ForecastArray.push(this.getForecastValue(Average, Last));
-        }
+      const result = {};
+      DISPLAY_SERIES.forEach((name) => {
+        result[name] = [];
       });
-      return {
-        [AVERAGE_TORQUE]: AverageArray,
-        [LAST_TORQUE]: LastArray,
-        [FORECAST_TORQUE]: ForecastArray,
-      };
+      OnetoNPump.forEach((position) => {
+        const array = this.getArrayByPosistionAndDirection(data, position, direction);
+        const lastObj = this.getLastArray(array);
+        DISPLAY_SERIES.forEach((name) => {
+          result[name].push(this.getValueOfAttr(lastObj, name));
+        });
+      });
+      return result;
     },
     populateSeriesByName(container, name, data) {
       const containerSeries = this.getSeriesContainer(container, name);
-      console.log('containerSeries', containerSeries);
       containerSeries.data = data[name];
       return containerSeries;
     },
