@@ -48,8 +48,8 @@ export default {
     getLastArray(array) {
       return array[array.length - 1];
     },
-    getArrayByPosistionAndDirection(data, position, direction) {
-      return _.filter(data, {
+    getLastByPosistionAndDirection(data, position, direction) {
+      return _.findLast(data, {
         Direction: direction,
         Position: position,
       });
@@ -72,8 +72,7 @@ export default {
         result[name] = [];
       });
       OnetoNPump.forEach((position) => {
-        const array = this.getArrayByPosistionAndDirection(data, position, direction);
-        const lastObj = this.getLastArray(array);
+        const lastObj = this.getLastByPosistionAndDirection(data, position, direction);
         DISPLAY_SERIES.forEach((name) => {
           result[name].push(this.getValueOfAttr(lastObj, name));
         });
