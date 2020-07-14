@@ -1,48 +1,15 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-2 py-3" style="border-right: 1px solid #ccc;">
-        <AssetsSidebar/>
+  <div class="row">
+    <div class="col-12">
+      <hr style="margin: 0 -20px;">
 
-      </div>
-      <div class="col-10 py-3">
-        <div class="card">
-          <div class="card-header">
-            Asset Overview
-            <i class="fa fa-arrow-right mx-1" aria-hidden="true"></i>
-            <i class="fa fa-dot-circle-o mx-1" aria-hidden="true"></i>
-            Master Station 1-1
-            <i class="fa fa-map-marker pull-right" aria-hidden="true"></i>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-12">
+      <h2 class="mt-3">Open</h2>
+      <highcharts :options="OpenChartOptions"></highcharts>
 
-                <div class="nav-scroller" style="margin-top: -20px;">
-                  <nav class="nav">
-                    <a class="p-2 text-muted" href="#">EVENTS</a>
-                    <a class="p-2 text-muted" href="#">POSITION</a>
-                    <a class="p-2 text-muted" href="#">TRAVEL TIME</a>
-                    <a class="p-2 text-muted active" href="#">TORQUE PROFILE</a>
-                    <a class="p-2 text-muted" href="#">WORK ORDERS</a>
-                    <a class="p-2 text-muted" href="#">ALARM ANALYTICS</a>
-                  </nav>
-                </div>
+      <hr style="margin: 0 -20px;">
 
-                <hr style="margin: 0 -20px;">
-
-                <h2 class="mt-3">Open</h2>
-                <highcharts :options="OpenChartOptions"></highcharts>
-
-                <hr style="margin: 0 -20px;">
-
-                <h2 class="mt-3">Close</h2>
-                <highcharts :options="CloseChartOptions"></highcharts>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <h2 class="mt-3">Close</h2>
+      <highcharts :options="CloseChartOptions"></highcharts>
     </div>
   </div>
 </template>
@@ -53,7 +20,6 @@ import _ from 'lodash';
 import chartOptions from '@/services/ChartOptions';
 import TorqueSvc from '@/services/Api/Assets/TorqueSvc';
 import ErrorSvc from '@/services/ErrorSvc';
-import AssetsSidebar from '@/components/assetsHealth/sidebar.vue';
 
 export default {
   name: 'TorqueProfile',
@@ -65,7 +31,6 @@ export default {
     };
   },
   components: {
-    AssetsSidebar,
     highcharts: Chart,
   },
   methods: {
