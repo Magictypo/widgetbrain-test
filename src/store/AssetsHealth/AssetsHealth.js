@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import chartOptions from '@/services/ChartOptions';
+import ChartSvc from '@/services/ChartSvc';
 import _ from 'lodash';
 import TorqueSvc from '@/services/AssetsHealth/TorqueSvc';
 import ErrorSvc from '@/services/ErrorSvc';
@@ -31,8 +31,8 @@ function getValueOfAttr(obj, attrName) {
 export default new Vuex.Store({
   state: {
     data: [],
-    OpenChartOptions: chartOptions(DISPLAY_SERIES),
-    CloseChartOptions: chartOptions(DISPLAY_SERIES),
+    OpenChartOptions: ChartSvc.createChartOptions(DISPLAY_SERIES),
+    CloseChartOptions: ChartSvc.createChartOptions(DISPLAY_SERIES),
   },
   getters: {
     getOpenChartOptions(state) {
@@ -96,7 +96,7 @@ export default new Vuex.Store({
         commit('setData', { data: res.data });
         dispatch('populateAllCharts');
       } catch (e) {
-        ErrorSvc.getErrors(e);
+        ErrorSvc.getError(e);
       }
     },
     doNextTick({ getters, commit }) {

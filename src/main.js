@@ -2,10 +2,8 @@ import GlobalConfig from '@/config';
 import Vue from 'vue';
 import 'bootstrap';
 import 'popper.js';
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 import axios from 'axios';
 
-import './mixin';
 import './mock';
 
 import App from './App.vue';
@@ -16,9 +14,6 @@ import './assets/scss/main.scss';
 
 Vue.config.productionTip = false;
 axios.defaults.baseURL = GlobalConfig.API_URL;
-
-Vue.use(BootstrapVue);
-Vue.use(IconsPlugin);
 
 new Vue({
   router,

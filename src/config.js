@@ -1,7 +1,7 @@
+const API_URL = process.env.VUE_APP_API_URL;
+
 const GlobalConfig = {
-  API_URL: process.env.VUE_APP_API_URL
-    ? process.env.VUE_APP_API_URL
-    : 'http://localhost:8000/api',
+  API_URL: API_URL || '/api',
 };
 
 export default (GlobalConfig);
