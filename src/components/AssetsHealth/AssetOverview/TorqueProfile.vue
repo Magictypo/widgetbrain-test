@@ -18,7 +18,7 @@
 
 <script>
 import { Chart } from 'highcharts-vue';
-import store from '@/store/AssetsHealth/AssetsHealth';
+import store from '@/store/AssetsHealth';
 
 let nTick = 0;
 
@@ -33,27 +33,27 @@ export default {
     highcharts: Chart,
   },
   methods: {
-    simulateNextTick() {
+    doNextTickSimulation() {
       setTimeout(() => {
         if (nTick > 100) return; // limit simulateTick to 100 tick
         nTick += 1;
         store.dispatch('doNextTick');
-        this.simulateNextTick();
+        this.doNextTickSimulation();
       }, 1000);
     },
   },
   async mounted() {
     this.isLoading = true;
     await store.dispatch('getData');
-    this.simulateNextTick();
+    this.doNextTickSimulation();
     this.isLoading = false;
   },
   computed: {
     OpenChartOptions() {
-      return store.getters.getOpenChartOptions;
+      return store.getters.getChartOptionsByDirection('Open');
     },
     CloseChartOptions() {
-      return store.getters.getCloseChartOptions;
+      return store.getters.getChartOptionsByDirection('Close');
     },
   },
 };

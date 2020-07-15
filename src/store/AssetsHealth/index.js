@@ -10,17 +10,18 @@ Vue.use(Vuex);
 const NUMBER_OF_PUMP = 100;
 const DIRECTION_OPEN = 'Open';
 const DIRECTION_CLOSE = 'Close';
+const DIRECTION_TO_DISPLAY = [DIRECTION_OPEN, DIRECTION_CLOSE];
 const AVERAGE_TORQUE = 'AverageTorque';
 const LAST_TORQUE = 'LastTorque';
 const FORECAST_TORQUE = 'ForecastTorque';
-const DISPLAY_SERIES = [AVERAGE_TORQUE, LAST_TORQUE, FORECAST_TORQUE];
+const SERIES_TO_DISPLAY = [AVERAGE_TORQUE, LAST_TORQUE, FORECAST_TORQUE];
 
 function getForecastValue(Average, Last) {
   // FORECAST Formula
   return (Average + Last) / 2;
 }
 
-function getValueOfAttr(obj, attrName) {
+function getAttrValue(obj, attrName) {
   if (!obj) return 0;
   if (attrName !== FORECAST_TORQUE) {
     return obj[attrName];
@@ -28,68 +29,96 @@ function getValueOfAttr(obj, attrName) {
   return getForecastValue(obj[AVERAGE_TORQUE], obj[LAST_TORQUE]);
 }
 
+function SeriesMember(name) {
+  this.name = name;
+  this.data = [];
+}
+
+function Series(seriesNames) {
+  this.collection = [];
+  seriesNames.forEach((name) => {
+    this.collection.push(new SeriesMember(name));
+  });
+}
+
+function findLastByDirectionAndPosition(data, direction, i) {
+  return _.findLast(data, {
+    Direction: direction,
+    Position: i,
+  });
+}
+
+function getDataWIPNormalize(data, direction) {
+  const seriesContainer = new Series(SERIES_TO_DISPLAY);
+
+  for (let position = 0; position < NUMBER_OF_PUMP; position += 1) {
+    const lastObj = findLastByDirectionAndPosition(data, direction, position);
+
+    SERIES_TO_DISPLAY.forEach((name) => {
+      const series = seriesContainer.collection.find((o) => o.name === name);
+      series.data.push(getAttrValue(lastObj, name));
+    });
+  }
+
+  return seriesContainer;
+}
+
 export default new Vuex.Store({
   state: {
+
     data: [],
-    OpenChartOptions: ChartSvc.createChartOptions(DISPLAY_SERIES),
-    CloseChartOptions: ChartSvc.createChartOptions(DISPLAY_SERIES),
+
+    Charts: [
+      {
+        direction: 'Open',
+        options: ChartSvc.createChartOptions(SERIES_TO_DISPLAY),
+      },
+      {
+        direction: 'Close',
+        options: ChartSvc.createChartOptions(SERIES_TO_DISPLAY),
+      },
+    ],
+
   },
   getters: {
-    getOpenChartOptions(state) {
-      return state.OpenChartOptions;
+
+    getChartOptionsByDirection: (state) => (direction) => {
+      const chart = state.Charts.find((o) => o.direction === direction);
+      return chart.options;
     },
-    getCloseChartOptions(state) {
-      return state.CloseChartOptions;
+
+    getDataByDirection: (state) => (direction) => {
+      const { data } = state;
+      return getDataWIPNormalize(data, direction);
     },
-    getDataForSeries: (state) => (direction) => {
-      const oneToNPump = Array.from(Array(NUMBER_OF_PUMP), (x, i) => i + 1);
-      const result = {};
-      DISPLAY_SERIES.forEach((name) => {
-        result[name] = [];
-      });
-      oneToNPump.forEach((position) => {
-        const lastObj = _.findLast(state.data, {
-          Direction: direction,
-          Position: position,
-        });
-        DISPLAY_SERIES.forEach((name) => {
-          result[name].push(getValueOfAttr(lastObj, name));
-        });
-      });
-      return result;
-    },
+
   },
   mutations: {
+
     setData(state, payload) {
       state.data = payload.data;
     },
+
     populateSeriesByName(state, payload) {
       const containerSeries = _.find(payload.chart.series, { name: payload.name });
       containerSeries.data = payload.data;
     },
+
+    updateSeriesByDirection(state, { direction, series }) {
+      const chart = state.Charts.find((o) => o.direction === direction);
+      chart.options.series = series.collection;
+    },
+
   },
   actions: {
-    populateChart({ commit, getters }, payload) {
-      const ChartSeries = payload.chart;
-      const SeriesData = getters.getDataForSeries(payload.direction);
-      DISPLAY_SERIES.forEach((name) => {
-        commit('populateSeriesByName', {
-          chart: ChartSeries,
-          name,
-          data: SeriesData[name],
-        });
+
+    populateAllCharts({ getters, commit }) {
+      DIRECTION_TO_DISPLAY.forEach((direction) => {
+        const series = getters.getDataByDirection(direction);
+        commit('updateSeriesByDirection', { direction, series });
       });
     },
-    populateAllCharts({ getters, dispatch }) {
-      dispatch('populateChart', {
-        chart: getters.getOpenChartOptions,
-        direction: DIRECTION_OPEN,
-      });
-      dispatch('populateChart', {
-        chart: getters.getCloseChartOptions,
-        direction: DIRECTION_CLOSE,
-      });
-    },
+
     async getData({ commit, dispatch }) {
       try {
         const res = await TorqueSvc.getData();
@@ -99,6 +128,7 @@ export default new Vuex.Store({
         ErrorSvc.getError(e);
       }
     },
+
     doNextTick({ getters, commit }) {
       const OnetoNPump = Array.from(Array(100), (x, i) => i + 1);
 
@@ -109,7 +139,7 @@ export default new Vuex.Store({
       const dSeriesOpen = {};
       const dSeriesClose = {};
 
-      DISPLAY_SERIES.forEach((name) => {
+      SERIES_TO_DISPLAY.forEach((name) => {
         const so = _.find(seriesOpen, { name });
         dSeriesOpen[name] = so.data.map((o) => o);
         const sc = _.find(seriesClose, { name });
@@ -117,7 +147,7 @@ export default new Vuex.Store({
       });
 
       // Simulate Data Movement
-      DISPLAY_SERIES.forEach((name) => {
+      SERIES_TO_DISPLAY.forEach((name) => {
         OnetoNPump.forEach((position) => {
           dSeriesOpen[name][position] += Math.random() < 0.5 ? -0.05 : 0.05;
           dSeriesClose[name][position] += Math.random() < 0.5 ? -0.05 : 0.05;
@@ -125,7 +155,7 @@ export default new Vuex.Store({
       });
 
       // Populate with simulated data
-      DISPLAY_SERIES.forEach((name) => {
+      SERIES_TO_DISPLAY.forEach((name) => {
         commit('populateSeriesByName', {
           chart: chartOpen,
           data: dSeriesOpen[name],
@@ -139,4 +169,5 @@ export default new Vuex.Store({
       });
     },
   },
+
 });
