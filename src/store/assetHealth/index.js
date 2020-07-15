@@ -65,18 +65,18 @@ export default new Vuex.Store({
     },
     populateSeriesByName(state, payload) {
       const containerSeries = _.find(payload.chart.series, { name: payload.name });
-      containerSeries.data = payload.data[payload.name];
+      containerSeries.data = payload.data;
     },
   },
   actions: {
     populateChart({ commit, getters }, payload) {
       const ChartSeries = payload.chart;
       const SeriesData = getters.getDataForSeries(payload.direction);
-      DISPLAY_SERIES.forEach((series) => {
+      DISPLAY_SERIES.forEach((name) => {
         commit('populateSeriesByName', {
           chart: ChartSeries,
-          name: series,
-          data: SeriesData,
+          name,
+          data: SeriesData[name],
         });
       });
     },
@@ -128,12 +128,12 @@ export default new Vuex.Store({
       DISPLAY_SERIES.forEach((name) => {
         commit('populateSeriesByName', {
           chart: chartOpen,
-          data: dSeriesOpen,
+          data: dSeriesOpen[name],
           name,
         });
         commit('populateSeriesByName', {
           chart: chartClose,
-          data: dSeriesClose,
+          data: dSeriesClose[name],
           name,
         });
       });
