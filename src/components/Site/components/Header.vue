@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <a class="navbar-brand ml-5 left-divider pl-2" href="#">
-      {{ 'Predictive Maintenance'.toUpperCase() }}
+      {{ title.toUpperCase() }}
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault"
@@ -13,7 +13,7 @@
       <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
-             aria-haspopup="true" aria-expanded="false">Magic Typo</a>
+             aria-haspopup="true" aria-expanded="false">{{ fistName }} {{ lastName }}</a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
             <a class="dropdown-item" href="#">Profile</a>
             <a class="dropdown-item" href="#">Logout</a>
@@ -32,6 +32,13 @@
 <script>
 export default {
   name: 'Header',
+  data() {
+    return {
+      title: 'Predictive Maintenance',
+      fistName: 'Magic',
+      lastName: 'Typo',
+    };
+  },
 };
 </script>
 

@@ -18,7 +18,7 @@
 
 <script>
 import { Chart } from 'highcharts-vue';
-import store from '@/store/assetHealth/index';
+import store from '@/store/assetHealth';
 
 let nTick = 0;
 
@@ -58,11 +58,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-.text-muted.active {
-  border-bottom: 4px solid #777777;
-}
-
-</style>

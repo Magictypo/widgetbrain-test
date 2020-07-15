@@ -16,6 +16,12 @@
 </template>
 <script>
 export default {
-  name: 'AssetsTab',
+  name: 'AssetsOverviewMenuTab',
 };
 </script>
+
+<style lang="scss" scoped>
+.text-muted.active {
+  border-bottom: 4px solid #777777;
+}
+</style>

@@ -1,30 +1,37 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import DashboardLayout from '@/components/layout/DashboardLayout.vue';
-import AssetLayout from '@/components/layout/AssetLayout.vue';
-import TorqueProfile from '@/views/AssetHealth/TorqueProfile.vue';
+import SiteLayout from '@/components/Site/Layout.vue';
+import AssetOverview from '@/components/AssetsHealth/AssetOverview/AssetOverview.vue';
+import TorqueProfile from '@/components/AssetsHealth/AssetOverview/TorqueProfile.vue';
+import AssetsHealth from '@/components/AssetsHealth/AssetsHealth.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    component: DashboardLayout,
+    component: SiteLayout,
+    name: 'root',
     redirect: { name: 'torque-profile' },
-  },
-  {
-    path: '/asset-health',
-    component: AssetLayout,
     children: [
       {
-        path: '',
+        path: 'asset-health',
         name: 'asset-health',
-        redirect: { name: 'torque-profile' },
-      },
-      {
-        path: 'torque-profile',
-        name: 'torque-profile',
-        component: TorqueProfile,
+        component: AssetsHealth,
+        children: [
+          {
+            path: 'overview',
+            component: AssetOverview,
+            name: 'overview',
+            children: [
+              {
+                path: 'torque-profile',
+                name: 'torque-profile',
+                component: TorqueProfile,
+              },
+            ],
+          },
+        ],
       },
     ],
   },

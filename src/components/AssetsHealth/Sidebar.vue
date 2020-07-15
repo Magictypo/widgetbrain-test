@@ -23,18 +23,26 @@
     </div>
     <div class="mt-3">
       <span>Terminal Name</span>
-      <h3>West</h3>
+      <h3>{{ terminalName }}</h3>
 
       <span>Country Code</span>
-      <h3>NLD</h3>
+      <h3>{{ countryCode }}</h3>
 
       <span>Address</span>
+      <h4>{{ address }}</h4>
       <i class="fa fa-map-marker pull-right fa-2x mt-5" aria-hidden="true"></i>
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: 'AssetsSidebar',
+  name: 'AssetsHealthSidebar',
+  data() {
+    return {
+      terminalName: 'West',
+      countryCode: 'NLD',
+      address: '',
+    };
+  },
 };
 </script>
