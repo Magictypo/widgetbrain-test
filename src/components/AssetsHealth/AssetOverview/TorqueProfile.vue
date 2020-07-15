@@ -18,7 +18,7 @@
 
 <script>
 import { Chart } from 'highcharts-vue';
-import store from '@/store/assetHealth';
+import store from '@/store/AssetsHealth/AssetsHealth';
 
 let nTick = 0;
 

@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import auth from './auth';
-import master from './master';
+import AssetsHealth from './AssetsHealth/AssetsHealth';
 
 Vue.use(Vuex);
 
@@ -12,7 +11,6 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: {
-    auth,
-    master,
+    AssetsHealth,
   },
 });
