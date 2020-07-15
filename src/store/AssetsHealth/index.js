@@ -132,8 +132,8 @@ export default new Vuex.Store({
     doNextTick({ getters, commit }) {
       const OnetoNPump = Array.from(Array(100), (x, i) => i + 1);
 
-      const chartOpen = getters.getOpenChartOptions;
-      const chartClose = getters.getCloseChartOptions;
+      const chartOpen = getters.getDataByDirection('Open');
+      const chartClose = getters.getDataByDirection('Close');
       const seriesOpen = chartOpen.series;
       const seriesClose = chartClose.series;
       const dSeriesOpen = {};
