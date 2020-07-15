@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import AssetsSidebar from '@/components/AssetsHealth/Sidebar.vue';
-import AssetsMenuTab from '@/components/AssetsHealth/AssetOverview/components/Menu.vue';
-import AssetsHeader from '@/components/AssetsHealth/AssetOverview/components/Header.vue';
+import AssetsSidebar from './components/Sidebar.vue';
+import AssetsMenuTab from './components/Menu.vue';
+import AssetsHeader from './components/Header.vue';
 
 export default {
   name: 'AssetsOverviewLayout',
