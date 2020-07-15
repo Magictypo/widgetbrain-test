@@ -1,12 +1,12 @@
 export default function (series = []) {
-  const SeriesData = function (name) {
+  function Series(name) {
     this.name = name;
     this.data = [];
-  };
+  }
 
   const seriesContainer = [];
   series.forEach((name) => {
-    seriesContainer.push(new SeriesData(name));
+    seriesContainer.push(new Series(name));
   });
 
   return {
