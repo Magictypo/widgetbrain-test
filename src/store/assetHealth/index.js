@@ -99,5 +99,44 @@ export default new Vuex.Store({
         ErrorSvc.getErrors(e);
       }
     },
+    doNextTick({ getters, commit }) {
+      const OnetoNPump = Array.from(Array(100), (x, i) => i + 1);
+
+      const chartOpen = getters.getOpenChartOptions;
+      const chartClose = getters.getCloseChartOptions;
+      const seriesOpen = chartOpen.series;
+      const seriesClose = chartClose.series;
+      const dSeriesOpen = {};
+      const dSeriesClose = {};
+
+      DISPLAY_SERIES.forEach((name) => {
+        const so = _.find(seriesOpen, { name });
+        dSeriesOpen[name] = so.data.map((o) => o);
+        const sc = _.find(seriesClose, { name });
+        dSeriesClose[name] = sc.data.map((o) => o);
+      });
+
+      // Simulate Data Movement
+      DISPLAY_SERIES.forEach((name) => {
+        OnetoNPump.forEach((position) => {
+          dSeriesOpen[name][position] += Math.random() < 0.5 ? -0.05 : 0.05;
+          dSeriesClose[name][position] += Math.random() < 0.5 ? -0.05 : 0.05;
+        });
+      });
+
+      // Populate with simulated data
+      DISPLAY_SERIES.forEach((name) => {
+        commit('populateSeriesByName', {
+          chart: chartOpen,
+          data: dSeriesOpen,
+          name,
+        });
+        commit('populateSeriesByName', {
+          chart: chartClose,
+          data: dSeriesClose,
+          name,
+        });
+      });
+    },
   },
 });

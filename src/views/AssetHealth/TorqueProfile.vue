@@ -34,43 +34,10 @@ export default {
   },
   methods: {
     simulateNextTick() {
-      // For Interactive Esthetic Only, don't judge this code
       setTimeout(() => {
         if (nTick > 100) return;
         nTick += 1;
-
-        const newAverage = this.OpenChartOptions.series[0].data.map((o) => o);
-        const newLast = this.OpenChartOptions.series[1].data.map((o) => o);
-        const newForecast = this.OpenChartOptions.series[2].data.map((o) => o);
-
-        const OnetoNPump = Array.from(Array(100), (x, i) => i + 1);
-        OnetoNPump.forEach((position) => {
-          newAverage[position - 1] += Math.random() < 0.5 ? -0.05 : 0.05;
-          newLast[position - 1] += Math.random() < 0.5 ? -0.05 : 0.05;
-          newForecast[position - 1] += Math.random() < 0.5 ? -0.05 : 0.05;
-        });
-
-        store.commit('populateSeriesByName', {
-          chart: this.OpenChartOptions,
-          data: newAverage,
-          name: 'AverageTorque',
-        });
-
-        store.commit('populateSeriesByName', {
-          chart: this.OpenChartOptions,
-          data: newLast,
-          name: 'LastTorque',
-        });
-
-        store.commit('populateSeriesByName', {
-          chart: this.OpenChartOptions,
-          data: newForecast,
-          name: 'ForecastTorque',
-        });
-
-        this.OpenChartOptions.series[0].data = newAverage;
-        this.OpenChartOptions.series[1].data = newLast;
-        this.OpenChartOptions.series[2].data = newForecast;
+        store.dispatch('doNextTick');
         this.simulateNextTick();
       }, 1000);
     },
