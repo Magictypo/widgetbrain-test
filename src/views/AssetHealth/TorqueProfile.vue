@@ -35,7 +35,7 @@ export default {
   methods: {
     simulateNextTick() {
       setTimeout(() => {
-        if (nTick > 100) return;
+        if (nTick > 100) return; // limit simulateTick to 100 tick
         nTick += 1;
         store.dispatch('doNextTick');
         this.simulateNextTick();
