@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from 'axios';
-import torqueResponse from '@/resources/mock/torque.json';
+import torqueResponse from '@/resources/mock/getTorqueProfile.json';
 
 const mock = new MockAdapter(axios);
 const enable = true;

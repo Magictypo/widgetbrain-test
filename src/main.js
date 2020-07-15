@@ -5,7 +5,6 @@ import 'popper.js';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 import axios from 'axios';
 
-import './filters';
 import './mixin';
 import './mock';
 

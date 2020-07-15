@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import chartOptions from '@/services/ChartOptions';
 import _ from 'lodash';
-import TorqueSvc from '@/services/Api/Assets/TorqueSvc';
+import TorqueSvc from '@/services/AssetsHealth/TorqueSvc';
 import ErrorSvc from '@/services/ErrorSvc';
 
 Vue.use(Vuex);
