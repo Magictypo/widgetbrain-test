@@ -32,28 +32,18 @@ function getAttrValue(obj, attrName) {
   return getForecastValue(obj[AVERAGE_TORQUE], obj[LAST_TORQUE]);
 }
 
-function Series(name) {
-  this.name = name;
-  this.data = [];
-}
-
-function CreateSeries(seriesNames) {
-  const result = [];
-  seriesNames.forEach((name) => {
-    result.push(new Series(name));
-  });
-  return result;
-}
-
 export default {
-  NormalizeData(data) {
-    const result = new CreateSeries(CHART_SERIES);
+  NormalizeData(data, chart) {
+    const result = [...chart.options.series];
     const uniquePosition = getUniquePosition(data);
 
     uniquePosition.forEach((position) => {
       const lastObj = _.findLast(data, { Position: position });
       result.forEach((series) => {
-        series.data.push(getAttrValue(lastObj, series.name));
+        series.data.push({
+          name: `Position ${position}`,
+          y: getAttrValue(lastObj, series.y),
+        });
       });
     });
 

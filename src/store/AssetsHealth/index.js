@@ -34,11 +34,11 @@ export default new Vuex.Store({
         const charts = getters.getCharts;
         charts.forEach((chart) => {
           const filteredData = _.filter(data, chart.filter);
-          const normalizedData = TorqueSvc.NormalizeData(filteredData, chart.name);
+          const normalizedData = TorqueSvc.NormalizeData(filteredData, chart);
           commit('updateChart', { name: chart.name, data: normalizedData });
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
         ErrorSvc.getError(e);
       }
     },

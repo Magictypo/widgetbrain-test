@@ -1,9 +1,4 @@
 function CreateChartOptions(series = []) {
-  const seriesContainer = [];
-  series.forEach((name) => {
-    seriesContainer.push({ name, data: [] });
-  });
-
   return {
     chart: {
       type: 'column',
@@ -12,7 +7,7 @@ function CreateChartOptions(series = []) {
       text: '',
     },
     xAxis: {
-      categories: Array.from(Array(100), (x, i) => i + 1),
+      categories: [],
       crosshair: true,
       title: {
         text: 'Valve Position',
@@ -20,17 +15,13 @@ function CreateChartOptions(series = []) {
     },
     yAxis: {
       min: 0,
+      max: 51,
       title: {
         text: 'Required Torque (%)',
       },
     },
     tooltip: {
-      headerFormat: '<span style="font-size:10px">Position {point.key}</span><table>',
-      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
-        + '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-      footerFormat: '</table>',
       shared: true,
-      useHTML: true,
     },
     plotOptions: {
       column: {
@@ -38,20 +29,26 @@ function CreateChartOptions(series = []) {
         borderWidth: 0,
       },
     },
-    series: seriesContainer,
+    series: series.map((x) => {
+      const y = { ...x };
+      // Add Attr Data
+      y.data = [];
+      return y;
+    }),
   };
 }
 
-function Chart(name, seriesNames) {
-  this.name = name;
-  this.options = CreateChartOptions(seriesNames);
+function Chart(chartConfig) {
+  this.name = chartConfig.name;
+  this.filter = chartConfig.filter;
+  this.options = CreateChartOptions(chartConfig.series);
 }
 
 export default {
   CreateCharts(charts = { name: '', series: [] }) {
     const createdCharts = [];
-    charts.forEach((chart) => {
-      createdCharts.push(new Chart(chart.name, chart.series));
+    charts.forEach((chartConfig) => {
+      createdCharts.push(new Chart(chartConfig));
     });
     return createdCharts;
   },
