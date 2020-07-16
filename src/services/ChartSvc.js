@@ -1,5 +1,3 @@
-import { CHART_SERIES } from '@/services/AssetsHealth/TorqueSvc';
-
 const DIRECTION_OPEN = 'Open';
 const DIRECTION_CLOSE = 'Close';
 const REQUESTED_CHARTS = [DIRECTION_OPEN, DIRECTION_CLOSE];
@@ -31,7 +29,7 @@ function CreateChartOptions(series = []) {
       },
     },
     tooltip: {
-      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      headerFormat: '<span style="font-size:10px">Position {point.key}</span><table>',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>'
         + '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
       footerFormat: '</table>',
@@ -57,11 +55,11 @@ export default {
   GetCharts() {
     return REQUESTED_CHARTS;
   },
-  CreateCharts() {
-    const charts = [];
-    this.GetCharts().forEach((name) => {
-      charts.push(new Chart(name, CHART_SERIES));
+  CreateCharts(charts = { name: '', series: [] }) {
+    const createdCharts = [];
+    charts.forEach((chart) => {
+      createdCharts.push(new Chart(chart.name, chart.series));
     });
-    return charts;
+    return createdCharts;
   },
 };

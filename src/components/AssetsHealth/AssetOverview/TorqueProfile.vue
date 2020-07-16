@@ -19,6 +19,7 @@
 <script>
 import { Chart } from 'highcharts-vue';
 import store from '@/store/AssetsHealth';
+import ChartSvc from '@/services/ChartSvc';
 
 let tick = 0;
 
@@ -47,6 +48,48 @@ export default {
     await store.dispatch('getData');
     this.startSimulation();
     this.isLoading = false;
+  },
+
+  created() {
+    const Charts = ChartSvc.CreateCharts([
+      {
+        name: 'Open',
+        xAxis: 'Position',
+        series: [
+          {
+            name: 'Average Torque',
+            y: 'AverageTorque',
+          },
+          {
+            name: 'Last Torque',
+            y: 'LastTorque',
+          },
+          {
+            name: 'Forecast Torque',
+            y: 'ForecastTorque',
+          },
+        ],
+      },
+      {
+        name: 'Close',
+        xAxis: 'Position',
+        series: [
+          {
+            name: 'Average Torque',
+            y: 'AverageTorque',
+          },
+          {
+            name: 'Last Torque',
+            y: 'LastTorque',
+          },
+          {
+            name: 'Forecast Torque',
+            y: 'ForecastTorque',
+          },
+        ],
+      },
+    ]);
+    store.commit('setCharts', { Charts });
   },
   computed: {
     OpenChartOptions() {

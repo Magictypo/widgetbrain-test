@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    Charts: ChartSvc.CreateCharts(),
+    Charts: [],
   },
   getters: {
     getChartOptions: (state) => (name) => {
@@ -17,6 +17,9 @@ export default new Vuex.Store({
     },
   },
   mutations: {
+    setCharts(state, { Charts }) {
+      state.Charts = Charts;
+    },
     updateChart(state, { name, data }) {
       const chart = state.Charts.find((o) => o.name === name);
       chart.options.series = data;
