@@ -20,9 +20,13 @@ export default new Vuex.Store({
     setCharts(state, { Charts }) {
       state.Charts = Charts;
     },
-    updateChart(state, { name, data }) {
+    updateChart(state, { name, data, updateXLabel }) {
       const chart = state.Charts.find((o) => o.name === name);
       chart.options.series = data;
+
+      if (updateXLabel) {
+        chart.options.xAxis.categories = updateXLabel;
+      }
     },
   },
   actions: {
@@ -34,21 +38,23 @@ export default new Vuex.Store({
         const charts = getters.getCharts;
         charts.forEach((chart) => {
           const filteredData = _.filter(data, chart.filter);
-          const normalizedData = TorqueSvc.NormalizeData(filteredData, chart);
-          commit('updateChart', { name: chart.name, data: normalizedData });
+          const uniquePosition = TorqueSvc.GetUniquePosition(filteredData);
+          const normalizedData = TorqueSvc.NormalizeData(filteredData, uniquePosition, chart);
+
+          commit('updateChart', { name: chart.name, data: normalizedData, updateXLabel: uniquePosition });
         });
       } catch (e) {
-        console.error(e);
+        console.log(e);
         ErrorSvc.getError(e);
       }
     },
-
     doNextTickSimulation({ getters, commit }) {
       const charts = getters.getCharts;
       charts.forEach((chart) => {
         const chartOptions = chart.options;
         const dataOld = chartOptions.series;
         const data = dataOld.map(TorqueSvc.GetDataNextTick);
+
         commit('updateChart', { name: chart.name, data });
       });
     },

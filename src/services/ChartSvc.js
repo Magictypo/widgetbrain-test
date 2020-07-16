@@ -8,7 +8,9 @@ function CreateChartOptions(series = []) {
     },
     xAxis: {
       categories: [],
-      crosshair: true,
+      tickInterval: 10,
+      endOnTick: true,
+      showLastLabel: true,
       title: {
         text: 'Valve Position',
       },
