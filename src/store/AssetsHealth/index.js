@@ -119,7 +119,7 @@ export default new Vuex.Store({
       containerSeries.data = payload.data;
     },
 
-    updateSeriesByDirection(state, { direction, series }) {
+    updateChartByDirection(state, { direction, series }) {
       const chart = state.Charts.find((o) => o.direction === direction);
       chart.options.series = series;
     },
@@ -130,7 +130,7 @@ export default new Vuex.Store({
     updateCharts({ getters, commit }) {
       DIRECTION_TO_DISPLAY.forEach((direction) => {
         const data = getters.getDataByDirection(direction);
-        commit('updateSeriesByDirection', { direction, series: data.collection });
+        commit('updateChartByDirection', { direction, series: data.collection });
       });
     },
 
@@ -149,7 +149,7 @@ export default new Vuex.Store({
         const chart = getters.getDataByDirection(direction);
         const { series } = chart;
         const seriesCopy = getSeriesWithRandomMovement(series);
-        commit('updateSeriesByDirection', { direction, series: seriesCopy });
+        commit('updateChartByDirection', { direction, series: seriesCopy });
       });
     },
   },
