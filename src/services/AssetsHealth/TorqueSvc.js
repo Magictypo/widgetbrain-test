@@ -35,9 +35,10 @@ export default {
   NormalizeData(data, uniquePosition, chart) {
     const chartSeries = [...chart.options.series];
 
+    // FOR SOME ODD REASON REFACTOR THIS PART GIVE ERROR ON flushcallbacks
     uniquePosition.forEach((position) => {
       const lastObj = _.findLast(data, { Position: position });
-
+      // FOR SOME ODD REASON REFACTOR THIS PART GIVE ERROR ON flushcallbacks
       chartSeries.forEach((series) => {
         series.data.push({
           name: `Position ${position}`,
