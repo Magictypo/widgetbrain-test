@@ -52,6 +52,12 @@ function CreateChartOptions(series = []) {
         text: 'Required Torque (%)',
       },
     },
+    legend: {
+      align: 'right',
+      verticalAlign: 'top',
+      x: 0,
+      y: 0,
+    },
     tooltip: {
       shared: true,
     },
