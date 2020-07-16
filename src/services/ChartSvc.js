@@ -13,8 +13,7 @@ function CreateChartOptions(series = []) {
         this.categories.forEach((text, index) => {
           if (index === 0) {
             positions.push(index);
-            // eslint-disable-next-line radix
-          } else if (parseInt(text) % 10 === 0) {
+          } else if (text % 10 === 0) {
             positions.push(index);
           } else if (index === this.categories.length - 1) {
             positions.push(index);
