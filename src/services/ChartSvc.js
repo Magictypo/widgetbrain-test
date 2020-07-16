@@ -8,7 +8,20 @@ function CreateChartOptions(series = []) {
     },
     xAxis: {
       categories: [],
-      tickInterval: 10,
+      tickPositioner() {
+        const positions = [];
+        this.categories.forEach((text, index) => {
+          if (index === 0) {
+            positions.push(index);
+            // eslint-disable-next-line radix
+          } else if (parseInt(text) % 10 === 0) {
+            positions.push(index);
+          } else if (index === this.categories.length - 1) {
+            positions.push(index);
+          }
+        });
+        return positions;
+      },
       endOnTick: true,
       showLastLabel: true,
       title: {
@@ -18,6 +31,23 @@ function CreateChartOptions(series = []) {
     yAxis: {
       min: 0,
       max: 51,
+      tickPositioner(min, max) {
+        const positions = [];
+        let tick = 0;
+        const increment = 5;
+
+        if (this.dataMax !== null && this.dataMin !== null) {
+          for (tick; tick - increment <= max; tick += increment) {
+            if (tick === 50) {
+              positions.push(51);
+            } else {
+              positions.push(tick);
+            }
+          }
+        }
+        return positions;
+      },
+      endOnTick: false,
       title: {
         text: 'Required Torque (%)',
       },
