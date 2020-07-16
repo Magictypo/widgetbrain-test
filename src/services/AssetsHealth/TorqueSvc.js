@@ -24,6 +24,28 @@ function getAttrValue(obj, attrName) {
   return getForecastValue(obj[AVERAGE_TORQUE], obj[LAST_TORQUE]);
 }
 
+function filterOneDataPerPosition(data, uniquePosition) {
+  const results = [];
+  uniquePosition.forEach((position) => {
+    results.push(_.findLast(data, { Position: position }));
+  });
+  return results;
+}
+
+function populateSeries(series, data) {
+  const seriesCopy = [...series];
+
+  seriesCopy.forEach((member, index) => {
+    const attrName = member.y;
+    seriesCopy[index].data = _.reduce(data, (result, o) => {
+      result.push(getAttrValue(o, attrName));
+      return result;
+    }, []);
+  });
+
+  return seriesCopy;
+}
+
 export default {
   GetUniquePosition(dataByDirection) {
     const uniqueCollection = _.uniqBy(dataByDirection, 'Position');
@@ -33,19 +55,9 @@ export default {
     }, []);
   },
   NormalizeData(data, uniquePosition, chart) {
-    const chartSeries = [...chart.options.series];
-
-    uniquePosition.forEach((position) => {
-      const lastObj = _.findLast(data, { Position: position });
-
-      chartSeries.forEach((series) => {
-        series.data.push({
-          name: `Position ${position}`,
-          y: getAttrValue(lastObj, series.y),
-        });
-      });
-    });
-
+    let chartSeries = [...chart.options.series];
+    const filteredData = filterOneDataPerPosition(data, uniquePosition);
+    chartSeries = populateSeries(chartSeries, filteredData);
     return chartSeries;
   },
 
