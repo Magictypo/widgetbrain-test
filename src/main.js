@@ -8,7 +8,6 @@ import './mock';
 
 import App from './App.vue';
 import router from './router';
-import store from './store';
 
 import './assets/scss/main.scss';
 
@@ -17,6 +16,5 @@ axios.defaults.baseURL = GlobalConfig.API_URL;
 
 new Vue({
   router,
-  store,
   render: (h) => h(App),
 }).$mount('#app');
