@@ -1,7 +1,3 @@
-const DIRECTION_OPEN = 'Open';
-const DIRECTION_CLOSE = 'Close';
-const REQUESTED_CHARTS = [DIRECTION_OPEN, DIRECTION_CLOSE];
-
 function CreateChartOptions(series = []) {
   const seriesContainer = [];
   series.forEach((name) => {
@@ -52,9 +48,6 @@ function Chart(name, seriesNames) {
 }
 
 export default {
-  GetCharts() {
-    return REQUESTED_CHARTS;
-  },
   CreateCharts(charts = { name: '', series: [] }) {
     const createdCharts = [];
     charts.forEach((chart) => {

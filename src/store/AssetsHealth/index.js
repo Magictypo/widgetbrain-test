@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import ChartSvc from '@/services/ChartSvc';
 import TorqueSvc from '@/services/AssetsHealth/TorqueSvc';
 import ErrorSvc from '@/services/ErrorSvc';
 
@@ -11,6 +10,9 @@ export default new Vuex.Store({
     Charts: [],
   },
   getters: {
+    getChart(state) {
+      return state.Charts;
+    },
     getChartOptions: (state) => (name) => {
       const chart = state.Charts.find((o) => o.name === name);
       return chart.options;
@@ -26,12 +28,13 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async getData({ commit }) {
+    async getData({ getters, commit }) {
       try {
         const response = await TorqueSvc.GetData();
-        ChartSvc.GetCharts().forEach((name) => {
-          const data = TorqueSvc.NormalizeDataByDirection(response.data, name);
-          commit('updateChart', { name, data });
+        const charts = getters.getChart;
+        charts.forEach((chart) => {
+          const data = TorqueSvc.NormalizeDataByDirection(response.data, chart.name);
+          commit('updateChart', { name: chart.name, data });
         });
       } catch (e) {
         console.log(e);
@@ -40,11 +43,12 @@ export default new Vuex.Store({
     },
 
     doNextTickSimulation({ getters, commit }) {
-      ChartSvc.GetCharts().forEach((name) => {
-        const chart = getters.getChartOptions(name);
-        const dataOld = chart.series;
+      const charts = getters.getChart;
+      charts.forEach((chart) => {
+        const chartOptions = getters.getChartOptions(chart.name);
+        const dataOld = chartOptions.series;
         const data = dataOld.map(TorqueSvc.GetDataNextTick);
-        commit('updateChart', { name, data });
+        commit('updateChart', { name: chart.name, data });
       });
     },
   },
