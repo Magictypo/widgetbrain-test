@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import TorqueSvc from '@/services/AssetsHealth/TorqueSvc';
 import ErrorSvc from '@/services/ErrorSvc';
+import _ from 'lodash';
 
 Vue.use(Vuex);
 
@@ -28,10 +29,13 @@ export default new Vuex.Store({
     async getData({ getters, commit }) {
       try {
         const response = await TorqueSvc.GetData();
+        const { data } = response;
+
         const charts = getters.getCharts;
         charts.forEach((chart) => {
-          const data = TorqueSvc.NormalizeDataByDirection(response.data, chart.name);
-          commit('updateChart', { name: chart.name, data });
+          const filteredData = _.filter(data, chart.filter);
+          const normalizedData = TorqueSvc.NormalizeData(filteredData, chart.name);
+          commit('updateChart', { name: chart.name, data: normalizedData });
         });
       } catch (e) {
         console.log(e);

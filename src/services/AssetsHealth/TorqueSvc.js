@@ -11,10 +11,6 @@ function randomMovement(value) {
   return value + randomValue;
 }
 
-function filterByDirection(data, direction) {
-  return _.filter(data, { Direction: direction });
-}
-
 function getUniquePosition(dataByDirection) {
   const uniqueCollection = _.uniqBy(dataByDirection, 'Position');
   return _.reduce(uniqueCollection, (result, o) => {
@@ -50,13 +46,12 @@ function CreateSeries(seriesNames) {
 }
 
 export default {
-  NormalizeDataByDirection(data, direction) {
+  NormalizeData(data) {
     const result = new CreateSeries(CHART_SERIES);
-    const dataByDirection = filterByDirection(data, direction);
-    const uniquePosition = getUniquePosition(dataByDirection);
+    const uniquePosition = getUniquePosition(data);
 
     uniquePosition.forEach((position) => {
-      const lastObj = _.findLast(dataByDirection, { Position: position });
+      const lastObj = _.findLast(data, { Position: position });
       result.forEach((series) => {
         series.data.push(getAttrValue(lastObj, series.name));
       });
