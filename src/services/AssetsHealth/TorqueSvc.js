@@ -6,9 +6,11 @@ const LAST_TORQUE = 'LastTorque';
 const FORECAST_TORQUE = 'ForecastTorque';
 export const CHART_SERIES = [AVERAGE_TORQUE, LAST_TORQUE, FORECAST_TORQUE];
 
-function randomMovement(value) {
+function randomMovement(obj) {
+  const newObj = { ...obj };
   const randomValue = Math.random() < 0.5 ? -0.1 : 0.1;
-  return value + randomValue;
+  newObj.y += randomValue;
+  return newObj;
 }
 
 function getUniquePosition(dataByDirection) {
