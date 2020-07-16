@@ -6,12 +6,12 @@
       <i v-if="isLoading" class="fa fa-spinner fa-2x fa-spin mt-3"></i>
 
       <h2 class="mt-3">Open</h2>
-      <highcharts :options="OpenChartOptions"></highcharts>
+      <highcharts :options="OpenChart.options"></highcharts>
 
       <hr style="margin: 0 -20px;">
 
       <h2 class="mt-3">Close</h2>
-      <highcharts :options="CloseChartOptions"></highcharts>
+      <highcharts :options="CloseChart.options"></highcharts>
     </div>
   </div>
 </template>
@@ -55,6 +55,7 @@ export default {
       {
         name: 'Open',
         xAxis: 'Position',
+        filter: { Direction: 'Open' },
         series: [
           {
             name: 'Average Torque',
@@ -73,6 +74,7 @@ export default {
       {
         name: 'Close',
         xAxis: 'Position',
+        filter: { Direction: 'Close' },
         series: [
           {
             name: 'Average Torque',
@@ -92,11 +94,11 @@ export default {
     store.commit('setCharts', { Charts });
   },
   computed: {
-    OpenChartOptions() {
-      return store.getters.getChartOptions('Open');
+    OpenChart() {
+      return store.getters.getChartByName('Open');
     },
-    CloseChartOptions() {
-      return store.getters.getChartOptions('Close');
+    CloseChart() {
+      return store.getters.getChartByName('Close');
     },
   },
 };

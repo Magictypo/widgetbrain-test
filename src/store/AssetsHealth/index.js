@@ -10,13 +10,10 @@ export default new Vuex.Store({
     Charts: [],
   },
   getters: {
-    getChart(state) {
+    getCharts(state) {
       return state.Charts;
     },
-    getChartOptions: (state) => (name) => {
-      const chart = state.Charts.find((o) => o.name === name);
-      return chart.options;
-    },
+    getChartByName: (state) => (name) => state.Charts.find((o) => o.name === name),
   },
   mutations: {
     setCharts(state, { Charts }) {
@@ -31,7 +28,7 @@ export default new Vuex.Store({
     async getData({ getters, commit }) {
       try {
         const response = await TorqueSvc.GetData();
-        const charts = getters.getChart;
+        const charts = getters.getCharts;
         charts.forEach((chart) => {
           const data = TorqueSvc.NormalizeDataByDirection(response.data, chart.name);
           commit('updateChart', { name: chart.name, data });
@@ -43,9 +40,9 @@ export default new Vuex.Store({
     },
 
     doNextTickSimulation({ getters, commit }) {
-      const charts = getters.getChart;
+      const charts = getters.getCharts;
       charts.forEach((chart) => {
-        const chartOptions = getters.getChartOptions(chart.name);
+        const chartOptions = chart.options;
         const dataOld = chartOptions.series;
         const data = dataOld.map(TorqueSvc.GetDataNextTick);
         commit('updateChart', { name: chart.name, data });
