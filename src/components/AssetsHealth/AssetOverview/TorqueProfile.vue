@@ -50,10 +50,10 @@ export default {
   },
   computed: {
     OpenChartOptions() {
-      return store.getters.getChartOptionsByDirection('Open');
+      return store.getters.getChartOptions('Open');
     },
     CloseChartOptions() {
-      return store.getters.getChartOptionsByDirection('Close');
+      return store.getters.getChartOptions('Close');
     },
   },
 };
