@@ -34,11 +34,13 @@ function SeriesMember(name) {
   this.data = [];
 }
 
-function Series(seriesNames) {
+function SeriesContainer(seriesNames) {
   this.collection = [];
   seriesNames.forEach((name) => {
     this.collection.push(new SeriesMember(name));
   });
+
+  this.getSeries = () => this.collection;
 }
 
 function findLastByDirectionAndPosition(data, direction, i) {
@@ -48,8 +50,8 @@ function findLastByDirectionAndPosition(data, direction, i) {
   });
 }
 
-function getDataWIPNormalize(data, direction) {
-  const seriesContainer = new Series(SERIES_TO_DISPLAY);
+function normalizeDataByDirection(data, direction) {
+  const seriesContainer = new SeriesContainer(SERIES_TO_DISPLAY);
 
   for (let position = 0; position < NUMBER_OF_PUMP; position += 1) {
     const lastObj = findLastByDirectionAndPosition(data, direction, position);
@@ -59,8 +61,21 @@ function getDataWIPNormalize(data, direction) {
       series.data.push(getAttrValue(lastObj, name));
     });
   }
+  return seriesContainer.getSeries();
+}
 
-  return seriesContainer;
+function randomMovement(num) {
+  const newNumber = num + Math.random() < 0.5 ? -0.05 : 0.05;
+  return newNumber;
+}
+
+function updateDataWithRandomMovement(o) {
+  o.data.forEach(randomMovement);
+}
+
+function getSeriesWithRandomMovement(series) {
+  const seriesCopy = { ...series };
+  seriesCopy.forEach(updateDataWithRandomMovement);
 }
 
 export default new Vuex.Store({
@@ -89,7 +104,7 @@ export default new Vuex.Store({
 
     getDataByDirection: (state) => (direction) => {
       const { data } = state;
-      return getDataWIPNormalize(data, direction);
+      return normalizeDataByDirection(data, direction);
     },
 
   },
@@ -106,66 +121,35 @@ export default new Vuex.Store({
 
     updateSeriesByDirection(state, { direction, series }) {
       const chart = state.Charts.find((o) => o.direction === direction);
-      chart.options.series = series.collection;
+      chart.options.series = series;
     },
 
   },
   actions: {
 
-    populateAllCharts({ getters, commit }) {
+    updateCharts({ getters, commit }) {
       DIRECTION_TO_DISPLAY.forEach((direction) => {
-        const series = getters.getDataByDirection(direction);
-        commit('updateSeriesByDirection', { direction, series });
+        const data = getters.getDataByDirection(direction);
+        commit('updateSeriesByDirection', { direction, series: data.collection });
       });
     },
 
     async getData({ commit, dispatch }) {
       try {
-        const res = await TorqueSvc.getData();
-        commit('setData', { data: res.data });
-        dispatch('populateAllCharts');
+        const response = await TorqueSvc.getData();
+        commit('setData', { data: response.data });
+        dispatch('updateCharts');
       } catch (e) {
         ErrorSvc.getError(e);
       }
     },
 
-    doNextTick({ getters, commit }) {
-      const OnetoNPump = Array.from(Array(100), (x, i) => i + 1);
-
-      const chartOpen = getters.getDataByDirection('Open');
-      const chartClose = getters.getDataByDirection('Close');
-      const seriesOpen = chartOpen.series;
-      const seriesClose = chartClose.series;
-      const dSeriesOpen = {};
-      const dSeriesClose = {};
-
-      SERIES_TO_DISPLAY.forEach((name) => {
-        const so = _.find(seriesOpen, { name });
-        dSeriesOpen[name] = so.data.map((o) => o);
-        const sc = _.find(seriesClose, { name });
-        dSeriesClose[name] = sc.data.map((o) => o);
-      });
-
-      // Simulate Data Movement
-      SERIES_TO_DISPLAY.forEach((name) => {
-        OnetoNPump.forEach((position) => {
-          dSeriesOpen[name][position] += Math.random() < 0.5 ? -0.05 : 0.05;
-          dSeriesClose[name][position] += Math.random() < 0.5 ? -0.05 : 0.05;
-        });
-      });
-
-      // Populate with simulated data
-      SERIES_TO_DISPLAY.forEach((name) => {
-        commit('populateSeriesByName', {
-          chart: chartOpen,
-          data: dSeriesOpen[name],
-          name,
-        });
-        commit('populateSeriesByName', {
-          chart: chartClose,
-          data: dSeriesClose[name],
-          name,
-        });
+    doNextTickSimulation({ getters, commit }) {
+      DIRECTION_TO_DISPLAY.forEach((direction) => {
+        const chart = getters.getDataByDirection(direction);
+        const { series } = chart;
+        const seriesCopy = getSeriesWithRandomMovement(series);
+        commit('updateSeriesByDirection', { direction, series: seriesCopy });
       });
     },
   },

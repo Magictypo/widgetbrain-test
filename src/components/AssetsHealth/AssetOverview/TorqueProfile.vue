@@ -20,7 +20,7 @@
 import { Chart } from 'highcharts-vue';
 import store from '@/store/AssetsHealth';
 
-let nTick = 0;
+let tick = 0;
 
 export default {
   name: 'TorqueProfile',
@@ -33,19 +33,19 @@ export default {
     highcharts: Chart,
   },
   methods: {
-    doNextTickSimulation() {
+    startSimulation() {
       setTimeout(() => {
-        if (nTick > 100) return; // limit simulateTick to 100 tick
-        nTick += 1;
-        store.dispatch('doNextTick');
-        this.doNextTickSimulation();
+        if (tick > 100) return; // limit simulateTick to 100 tick
+        tick += 1;
+        store.dispatch('doNextTickSimulation');
+        this.startSimulation();
       }, 1000);
     },
   },
   async mounted() {
     this.isLoading = true;
     await store.dispatch('getData');
-    this.doNextTickSimulation();
+    this.startSimulation();
     this.isLoading = false;
   },
   computed: {
