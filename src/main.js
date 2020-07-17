@@ -7,7 +7,7 @@ import 'popper.js';
 
 import './mock';
 
-import App from './App.vue';
+import App from './components/App.vue';
 import router from './router';
 
 import './assets/scss/main.scss';
