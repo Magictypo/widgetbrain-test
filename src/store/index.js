@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import TorqueSvc from '@/services/AssetsHealth/TorqueSvc';
+import TorqueSvc from '@/services/TorqueSvc';
 import ErrorSvc from '@/services/ErrorSvc';
 import _ from 'lodash';
 
