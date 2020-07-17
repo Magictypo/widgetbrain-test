@@ -1,4 +1,4 @@
-<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+<template>
   <div>
     <Header></Header>
 
@@ -15,7 +15,7 @@ import Footer from './components/Footer.vue';
 import Header from './components/Header.vue';
 
 export default {
-  name: 'DashboardLayout',
+  name: 'SiteLayout',
   components: { Header, Footer },
 };
 </script>

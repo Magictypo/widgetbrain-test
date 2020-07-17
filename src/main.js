@@ -1,8 +1,9 @@
 import GlobalConfig from '@/config';
 import Vue from 'vue';
+import axios from 'axios';
+import store from './store/index';
 import 'bootstrap';
 import 'popper.js';
-import axios from 'axios';
 
 import './mock';
 
@@ -16,5 +17,6 @@ axios.defaults.baseURL = GlobalConfig.API_URL;
 
 new Vue({
   router,
+  store,
   render: (h) => h(App),
 }).$mount('#app');

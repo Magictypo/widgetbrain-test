@@ -16,7 +16,7 @@
 </template>
 <script>
 export default {
-  name: 'AssetsOverviewMenuTab',
+  name: 'AssetsTabMenu',
 };
 </script>
 

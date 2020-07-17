@@ -36,7 +36,7 @@
 </template>
 <script>
 export default {
-  name: 'AssetsHealthSidebar',
+  name: 'AssetsSidebar',
   data() {
     return {
       terminalName: 'West',

@@ -1,33 +1,31 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import Layout from '@/components/Site/Layout.vue';
+import List from '@/components/AssetsHealth/List.vue';
+import Detail from '@/components/AssetsHealth/Detail.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    component: () => import('@/components/Site/Layout.vue'),
+    component: Layout,
     name: 'root',
-    redirect: { name: 'torque-profile' },
+    // Redirect to torque-profile, because no other page
+    redirect: { name: 'assets-detail' },
     children: [
       {
-        path: 'asset-health',
-        name: 'asset-health',
-        component: () => import('@/components/AssetsHealth/AssetsHealth.vue'),
-        children: [
-          {
-            path: 'overview',
-            component: () => import('@/components/AssetsHealth/AssetOverview/AssetOverview.vue'),
-            name: 'overview',
-            children: [
-              {
-                path: 'torque-profile',
-                name: 'torque-profile',
-                component: () => import('@/components/AssetsHealth/AssetOverview/TorqueProfile.vue'),
-              },
-            ],
-          },
-        ],
+        path: 'assets',
+        component: List,
+        // Redirect because the page are empty
+        redirect: { name: 'assets-detail' },
+      },
+      {
+        // Static Path to Simulate the id
+        // path: ':id',
+        path: 'assets/1-1',
+        component: Detail,
+        name: 'assets-detail',
       },
     ],
   },

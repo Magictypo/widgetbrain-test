@@ -9,7 +9,7 @@
 </template>
 <script>
 export default {
-  name: 'AssetsOverviewHeader',
+  name: 'AssetsHeader',
   data() {
     return {
       assetsName: 'Master Station 1-1',

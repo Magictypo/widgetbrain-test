@@ -18,7 +18,6 @@
 
 <script>
 import { Chart } from 'highcharts-vue';
-import store from '@/store/AssetsHealth';
 import ChartSvc from '@/services/ChartSvc';
 
 let tick = 0;
@@ -38,18 +37,17 @@ export default {
       setTimeout(() => {
         if (tick > 100) return; // limit simulateTick to 100 tick
         tick += 1;
-        store.dispatch('doNextTickSimulation');
+        this.$store.dispatch('doNextTickSimulation');
         this.startSimulation();
       }, 1000);
     },
   },
   async mounted() {
     this.isLoading = true;
-    await store.dispatch('getData');
+    await this.$store.dispatch('getData');
     this.startSimulation();
     this.isLoading = false;
   },
-
   created() {
     const Charts = ChartSvc.CreateCharts([
       {
@@ -91,14 +89,14 @@ export default {
         ],
       },
     ]);
-    store.commit('setCharts', { Charts });
+    this.$store.commit('setCharts', { Charts });
   },
   computed: {
     OpenChart() {
-      return store.getters.getChartByName('Open');
+      return this.$store.getters.getChartByName('Open');
     },
     CloseChart() {
-      return store.getters.getChartByName('Close');
+      return this.$store.getters.getChartByName('Close');
     },
   },
 };
