@@ -1,6 +1,10 @@
 import axios from 'axios';
 import _ from 'lodash';
 
+/*
+  Const for attribute of logs,
+  so it would be easy to update when attr changed
+*/
 const AVERAGE_TORQUE = 'AverageTorque';
 const LAST_TORQUE = 'LastTorque';
 const FORECAST_TORQUE = 'ForecastTorque';
@@ -26,7 +30,10 @@ function getAttrValue(obj, attrName) {
 
 export default {
   GetUniquePosition(dataByDirection) {
+    // result of lodash uniqBy are not in predictable position
     const uniqueCollection = _.uniqBy(dataByDirection, 'Position');
+
+    // reduce to get array of positions
     return _.reduce(uniqueCollection, (result, o) => {
       result.push(o.Position);
       return result;
@@ -34,11 +41,13 @@ export default {
   },
   NormalizeData(data, uniquePosition, chart) {
     const chartSeries = [...chart.options.series];
-
-    // FOR SOME ODD REASON REFACTOR THIS PART GIVE ERROR ON flushcallbacks vue runtime
+    /*
+      FOR SOME ODD REASON REFACTOR THIS PART GIVE ERROR ON flushcallbacks vue runtime
+      see branch odd_bug
+    */
     uniquePosition.forEach((position) => {
       const lastObj = _.findLast(data, { Position: position });
-      // FOR SOME ODD REASON REFACTOR THIS PART GIVE ERROR ON flushcallbacks vue runtime
+
       chartSeries.forEach((series) => {
         series.data.push({
           name: `Position ${position}`,
